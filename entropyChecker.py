@@ -1,59 +1,53 @@
 import math, re
 
 def readPassword(password):
-    n, lower, upper, num, symbol = 1,1,1,1,1
+    lower, upper, num, symbol = False, False, False, False
+    n = 0 # password space
     symbols = re.compile(r"[!@#$%^&*()-+_=:;,./?{}\[\]'\"~`\\<>|]")
     doesNotContain = []
 
     for c in password:
-        if c.islower():
-            lower *= 26**1
-            print(c, "lower")
-        elif c.isupper():
-            upper *= 26**1
-            print(c, "upper")
-        elif c.isdigit():
-            num *= 10**1
-            print(c, "num")
-        elif re.search(symbols, c):
-            symbol *= 32**1
-            print(c, "symbol")
+        if c.islower() and not lower:
+            n += 26
+            lower = True
+        elif c.isupper() and not upper:
+            n += 26
+            upper = True
+        elif c.isdigit() and not num:
+            n += 10
+            num = True
+        elif re.search(symbols, c) and not symbol:
+            n += 32
+            symbol = True
 
-    print(lower, upper, num, symbol)
-
-    if lower == 1:
+    if not lower:
         doesNotContain.append("lowercase letters")
-    if upper == 1:
+    if not upper:
         doesNotContain.append("uppercase letters")
-    if num == 1:
+    if not num:
         doesNotContain.append("numbers")
-    if symbol == 1:
+    if not symbol:
         doesNotContain.append("symbols")
 
     length = len(password)
-
-    # N = password space
-    for i in [lower, upper, num, symbol]:
-        if i > 1:
-            print(n, "+", i, "=", n*i)
-            n *= i
-
-    print(n)
     
     return n, doesNotContain, length
 
 def calculateEntropy(n, dnc, length):
     # E = log2(N)
-    entropy = math.log2(n)
+    entropy = math.log2(n**length)
 
-    if entropy >= 75:
+    if entropy >= 90:
         print(f"Your password's entropy is high: {round(entropy,3)} bits. You have a strong password!")
 
-    if entropy >= 50:
-        print(f"Your password's entropy is average: {round(entropy,3)} bits. You have a good password!")
+    elif entropy >= 75:
+        print(f"Your password's entropy is high: {round(entropy,3)} bits. You have a good password!")
 
     else:
-        if entropy >= 25:
+        if entropy >= 65:
+            print(f"Your password's entropy is average: {round(entropy,3)} bits. You have an okay password, but it could be better!")
+
+        elif entropy >= 50:
             print(f"Your password's entropy is low: {round(entropy,3)} bits. You have a weak password.")
         
         else:
@@ -63,20 +57,21 @@ def calculateEntropy(n, dnc, length):
             suggestion = "Try adding "
 
             for i in range(len(dnc)):
-
-                if i > len(dnc)-1:
-                    suggestion += ", and "
-
                 suggestion += dnc[i]
 
-                if i < len(dnc)-1:
-                    suggestion += ", "
+                if len(dnc) != 2:
+                    if i < len(dnc) - 2:
+                        suggestion += ", "
+                    elif i == len(dnc) - 2:
+                        suggestion += ", and "
+                else:
+                    suggestion += " and "
 
             suggestion += " to your password to make it stronger."
 
             print(suggestion)
 
         else:
-            print("Try making a longer password (around 8-31 characters).")
+            print("Try making a longer password (more than 8 characters).")
             print(f"Current password length: {length}")
             

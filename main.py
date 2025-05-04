@@ -1,6 +1,11 @@
 from entropyChecker import readPassword, calculateEntropy
 
-password = input("Enter your password: ")
+while True:
+    
+    password = input("\nEnter your password (or press enter to quit): ")
 
-n, dnc, len = readPassword(password)
-calculateEntropy(n, dnc, len)
+    if password != "":
+        n, dnc, len = readPassword(password)
+        calculateEntropy(n, dnc, len)
+    else:
+        break
