@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from entropyChecker import readPassword, calculateEntropy
 
 while True:
